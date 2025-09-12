@@ -85,7 +85,7 @@ const Index = () => {
             </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              <span className="block text-primary-glow">MedGluco AI</span>
+              <span className="block text-primary-glow font-extrabold">MedGluco AI</span>
               Diabetes Risk Assessment
             </h1>
             
