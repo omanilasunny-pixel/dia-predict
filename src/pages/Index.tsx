@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DiabetesForm from '@/components/DiabetesForm';
 import DiagnosisResult from '@/components/DiagnosisResult';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { UserMenu } from '@/components/auth/UserMenu';
+import { useAuth } from '@/hooks/useAuth';
 import { getPredictionAsync } from '@/utils/diabetesPrediction';
-import { Activity, Brain, Database, Shield, Zap, Headphones, MessageCircle, Stethoscope } from 'lucide-react';
+import { Activity, Brain, Database, Shield, Zap, Headphones, MessageCircle, Stethoscope, User } from 'lucide-react';
 import heroImage from '@/assets/medical-hero.jpg';
 
 interface HealthMetrics {
@@ -25,9 +28,11 @@ interface DiagnosisData {
 }
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
   const [currentStep, setCurrentStep] = useState<'form' | 'loading' | 'result'>('form');
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const handleFormSubmit = async (formData: HealthMetrics) => {
     setIsLoading(true);
@@ -97,6 +102,24 @@ const Index = () => {
         </div>
         
         <div className="relative container mx-auto px-6 py-16 text-center text-white">
+          {/* Auth Button in Header */}
+          <div className="absolute top-4 right-4">
+            {authLoading ? (
+              <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />
+            ) : user ? (
+              <UserMenu />
+            ) : (
+              <Button 
+                onClick={() => setAuthModalOpen(true)}
+                variant="outline" 
+                className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+            )}
+          </div>
+          
           <div className="max-w-4xl mx-auto space-y-6">
             <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 glow-effect">
               <Brain className="w-4 h-4 mr-2" />
@@ -186,6 +209,9 @@ const Index = () => {
           </p>
         </div>
       </footer>
+      
+      {/* Auth Modal */}
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
     </div>
   );
 };
