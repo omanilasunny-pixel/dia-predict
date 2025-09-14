@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import DiabetesForm from '@/components/DiabetesForm';
 import DiagnosisResult from '@/components/DiagnosisResult';
 import { getPredictionAsync } from '@/utils/diabetesPrediction';
-import { Activity, Brain, Database, Shield, Zap } from 'lucide-react';
+import { Activity, Brain, Database, Shield, Zap, Headphones, MessageCircle, Stethoscope } from 'lucide-react';
 import heroImage from '@/assets/medical-hero.jpg';
 
 interface HealthMetrics {
@@ -66,6 +66,25 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+        <Button 
+          className="w-14 h-14 rounded-full shadow-lg glow-effect bg-secondary hover:bg-secondary/90 float-animation"
+          size="icon"
+          title="Chat with Doctor"
+        >
+          <Stethoscope className="w-6 h-6" />
+        </Button>
+        <Button 
+          className="w-14 h-14 rounded-full shadow-lg glow-effect bg-accent hover:bg-accent/90 float-animation"
+          size="icon"
+          title="User Support"
+          style={{ animationDelay: '0.5s' }}
+        >
+          <Headphones className="w-6 h-6" />
+        </Button>
+      </div>
+
       {/* Header Section */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0">
@@ -74,12 +93,12 @@ const Index = () => {
             alt="Medical diabetes monitoring equipment" 
             className="w-full h-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 medical-gradient opacity-90"></div>
+          <div className="absolute inset-0 hero-gradient opacity-90"></div>
         </div>
         
         <div className="relative container mx-auto px-6 py-16 text-center text-white">
           <div className="max-w-4xl mx-auto space-y-6">
-            <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
+            <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 glow-effect">
               <Brain className="w-4 h-4 mr-2" />
               AI-Powered Medical Analysis
             </Badge>
@@ -95,20 +114,20 @@ const Index = () => {
             </p>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
-              <div className="text-center">
-                <Brain className="w-8 h-8 mx-auto mb-2 text-primary-glow" />
+              <div className="text-center float-animation">
+                <Brain className="w-8 h-8 mx-auto mb-2 text-secondary glow-effect" />
                 <div className="text-sm font-semibold">Neural Network</div>
               </div>
-              <div className="text-center">
-                <Zap className="w-8 h-8 mx-auto mb-2 text-primary-glow" />
+              <div className="text-center float-animation" style={{ animationDelay: '0.5s' }}>
+                <Zap className="w-8 h-8 mx-auto mb-2 text-accent glow-effect" />
                 <div className="text-sm font-semibold">K-NN Algorithm</div>
               </div>
-              <div className="text-center">
-                <Database className="w-8 h-8 mx-auto mb-2 text-primary-glow" />
+              <div className="text-center float-animation" style={{ animationDelay: '1s' }}>
+                <Database className="w-8 h-8 mx-auto mb-2 text-success glow-effect" />
                 <div className="text-sm font-semibold">Clinical Data</div>
               </div>
-              <div className="text-center">
-                <Shield className="w-8 h-8 mx-auto mb-2 text-primary-glow" />
+              <div className="text-center float-animation" style={{ animationDelay: '1.5s' }}>
+                <Shield className="w-8 h-8 mx-auto mb-2 text-primary-glow glow-effect" />
                 <div className="text-sm font-semibold">HIPAA Compliant</div>
               </div>
             </div>
@@ -133,20 +152,20 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 rounded-lg bg-accent/50">
-                    <div className="font-semibold text-sm">MedPix Database</div>
+                  <div className="text-center p-4 rounded-lg bg-secondary-light medical-transition hover:scale-105">
+                    <div className="font-semibold text-sm text-secondary-foreground">MedPix Database</div>
                     <div className="text-xs text-muted-foreground">Medical Imaging</div>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-accent/50">
-                    <div className="font-semibold text-sm">Health Data</div>
+                  <div className="text-center p-4 rounded-lg bg-accent-light medical-transition hover:scale-105">
+                    <div className="font-semibold text-sm text-accent-foreground">Health Data</div>
                     <div className="text-xs text-muted-foreground">Clinical Records</div>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-accent/50">
-                    <div className="font-semibold text-sm">Re3Data</div>
+                  <div className="text-center p-4 rounded-lg bg-primary/10 medical-transition hover:scale-105">
+                    <div className="font-semibold text-sm text-primary">Re3Data</div>
                     <div className="text-xs text-muted-foreground">Research Registry</div>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-accent/50">
-                    <div className="font-semibold text-sm">Global Health Observatory</div>
+                  <div className="text-center p-4 rounded-lg bg-success/10 medical-transition hover:scale-105">
+                    <div className="font-semibold text-sm text-success">Global Health Observatory</div>
                     <div className="text-xs text-muted-foreground">WHO Statistics</div>
                   </div>
                 </div>
