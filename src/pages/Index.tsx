@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DiabetesForm from '@/components/DiabetesForm';
 import DiagnosisResult from '@/components/DiagnosisResult';
-import { AuthModal } from '@/components/auth/AuthModal';
-import { UserMenu } from '@/components/auth/UserMenu';
-import { useAuth } from '@/hooks/useAuth';
+import { DoctorChat } from '@/components/chat/DoctorChat';
+import { SupportChat } from '@/components/chat/SupportChat';
 import { getPredictionAsync } from '@/utils/diabetesPrediction';
 import { Activity, Brain, Database, Shield, Zap, Headphones, MessageCircle, Stethoscope, User } from 'lucide-react';
 import heroImage from '@/assets/medical-hero.jpg';
@@ -28,11 +27,11 @@ interface DiagnosisData {
 }
 
 const Index = () => {
-  const { user, loading: authLoading } = useAuth();
   const [currentStep, setCurrentStep] = useState<'form' | 'loading' | 'result'>('form');
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [doctorChatOpen, setDoctorChatOpen] = useState(false);
+  const [supportChatOpen, setSupportChatOpen] = useState(false);
 
   const handleFormSubmit = async (formData: HealthMetrics) => {
     setIsLoading(true);
@@ -74,6 +73,7 @@ const Index = () => {
       {/* Floating Action Buttons */}
       <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
         <Button 
+          onClick={() => setDoctorChatOpen(true)}
           className="w-14 h-14 rounded-full shadow-lg glow-effect bg-secondary hover:bg-secondary/90 float-animation"
           size="icon"
           title="Chat with Doctor"
@@ -81,6 +81,7 @@ const Index = () => {
           <Stethoscope className="w-6 h-6" />
         </Button>
         <Button 
+          onClick={() => setSupportChatOpen(true)}
           className="w-14 h-14 rounded-full shadow-lg glow-effect bg-accent hover:bg-accent/90 float-animation"
           size="icon"
           title="User Support"
@@ -102,23 +103,6 @@ const Index = () => {
         </div>
         
         <div className="relative container mx-auto px-6 py-16 text-center text-white">
-          {/* Auth Button in Header */}
-          <div className="absolute top-4 right-4">
-            {authLoading ? (
-              <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />
-            ) : user ? (
-              <UserMenu />
-            ) : (
-              <Button 
-                onClick={() => setAuthModalOpen(true)}
-                variant="outline" 
-                className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-              >
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
-            )}
-          </div>
           
           <div className="max-w-4xl mx-auto space-y-6">
             <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 glow-effect">
@@ -210,8 +194,9 @@ const Index = () => {
         </div>
       </footer>
       
-      {/* Auth Modal */}
-      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      {/* Chat Modals */}
+      <DoctorChat open={doctorChatOpen} onOpenChange={setDoctorChatOpen} />
+      <SupportChat open={supportChatOpen} onOpenChange={setSupportChatOpen} />
     </div>
   );
 };
