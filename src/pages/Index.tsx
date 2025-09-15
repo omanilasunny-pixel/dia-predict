@@ -12,7 +12,7 @@ import heroImage from '@/assets/medical-hero.jpg';
 
 interface HealthMetrics {
   age: string;
-  pregnancies: string;
+  gender: string;
   glucose: string;
   bloodPressure: string;
   bmi: string;
@@ -29,16 +29,18 @@ interface DiagnosisData {
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<'form' | 'loading' | 'result'>('form');
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisData | null>(null);
+  const [formData, setFormData] = useState<HealthMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [doctorChatOpen, setDoctorChatOpen] = useState(false);
   const [supportChatOpen, setSupportChatOpen] = useState(false);
 
-  const handleFormSubmit = async (formData: HealthMetrics) => {
+  const handleFormSubmit = async (submittedFormData: HealthMetrics) => {
+    setFormData(submittedFormData);
     setIsLoading(true);
     setCurrentStep('loading');
     
     try {
-      const result = await getPredictionAsync(formData);
+      const result = await getPredictionAsync(submittedFormData);
       setDiagnosisResult(result);
       setCurrentStep('result');
     } catch (error) {
@@ -51,6 +53,7 @@ const Index = () => {
   const handleNewAssessment = () => {
     setCurrentStep('form');
     setDiagnosisResult(null);
+    setFormData(null);
   };
 
   const renderContent = () => {
@@ -61,7 +64,18 @@ const Index = () => {
         return <LoadingScreen />;
       case 'result':
         return diagnosisResult ? (
-          <DiagnosisResult result={diagnosisResult} onNewAssessment={handleNewAssessment} />
+          <DiagnosisResult 
+            result={diagnosisResult} 
+            onNewAssessment={handleNewAssessment}
+            healthMetrics={formData || {
+              age: '',
+              gender: '',
+              glucose: '',
+              bloodPressure: '',
+              bmi: '',
+              insulin: ''
+            }}
+          />
         ) : null;
       default:
         return null;

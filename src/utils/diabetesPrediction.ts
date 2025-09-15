@@ -1,6 +1,6 @@
 interface HealthMetrics {
   age: string;
-  pregnancies: string;
+  gender: string;
   glucose: string;
   bloodPressure: string;
   bmi: string;
@@ -17,7 +17,7 @@ interface DiagnosisData {
 // Simulated ML model combining Neural Network and K-NN approaches
 export const predictDiabetes = (metrics: HealthMetrics): DiagnosisData => {
   const age = parseFloat(metrics.age);
-  const pregnancies = parseFloat(metrics.pregnancies);
+  const gender = metrics.gender.toLowerCase();
   const glucose = parseFloat(metrics.glucose);
   const bloodPressure = parseFloat(metrics.bloodPressure);
   const bmi = parseFloat(metrics.bmi);
@@ -67,10 +67,13 @@ export const predictDiabetes = (metrics: HealthMetrics): DiagnosisData => {
     riskFactors.push('Abnormal insulin levels');
   }
 
-  // Pregnancy factor (gestational diabetes risk)
-  if (pregnancies >= 3) {
+  // Gender factor
+  if (gender === 'male' && bmi > 28) {
     riskScore += 0.05;
-    riskFactors.push('Multiple pregnancies (increased gestational diabetes risk)');
+    riskFactors.push('Male gender with elevated BMI');
+  } else if (gender === 'female' && age > 35 && bmi > 25) {
+    riskScore += 0.03;
+    riskFactors.push('Female gender with age and weight factors');
   }
 
   // K-NN simulation: adjust score based on combination patterns

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, AlertTriangle, RotateCcw, TrendingUp } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { CheckCircle, AlertTriangle, RotateCcw, TrendingUp, Mail, Send } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DiagnosisData {
   isDiabetic: boolean;
@@ -15,10 +19,21 @@ interface DiagnosisData {
 interface DiagnosisResultProps {
   result: DiagnosisData;
   onNewAssessment: () => void;
+  healthMetrics: {
+    age: string;
+    gender: string;
+    glucose: string;
+    bloodPressure: string;
+    bmi: string;
+    insulin: string;
+  };
 }
 
-const DiagnosisResult: React.FC<DiagnosisResultProps> = ({ result, onNewAssessment }) => {
+const DiagnosisResult: React.FC<DiagnosisResultProps> = ({ result, onNewAssessment, healthMetrics }) => {
   const { isDiabetic, confidence, diabetesType, riskFactors } = result;
+  const [email, setEmail] = useState('');
+  const [isEmailSending, setIsEmailSending] = useState(false);
+  const { toast } = useToast();
 
   const getResultColor = () => {
     if (!isDiabetic) return 'success';
@@ -44,6 +59,57 @@ const DiagnosisResult: React.FC<DiagnosisResultProps> = ({ result, onNewAssessme
   };
 
   const message = getResultMessage();
+
+  const handleSendEmail = async () => {
+    if (!email.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter an email address to send the results.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsEmailSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-assessment-email', {
+        body: {
+          email: email.trim(),
+          result,
+          healthMetrics
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Email Sent Successfully",
+        description: `Assessment results have been sent to ${email}`,
+      });
+      setEmail('');
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Failed to Send Email",
+        description: error.message || "There was an error sending your assessment results.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsEmailSending(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-2xl space-y-6 slide-in">
@@ -108,6 +174,41 @@ const DiagnosisResult: React.FC<DiagnosisResultProps> = ({ result, onNewAssessme
               and should not replace professional medical advice. Please consult with a healthcare provider 
               for proper diagnosis and treatment.
             </p>
+          </div>
+
+          {/* Email Results Section */}
+          <div className="p-4 rounded-lg bg-primary/5 border border-primary/20 space-y-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Mail className="w-5 h-5 text-primary" />
+              <span className="font-semibold">Email Results</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              Send a detailed copy of your assessment results to your email address.
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Label htmlFor="email" className="sr-only">Email address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="medical-transition focus:medical-focus"
+                />
+              </div>
+              <Button
+                onClick={handleSendEmail}
+                disabled={isEmailSending || !email.trim()}
+                className="medical-gradient"
+              >
+                {isEmailSending ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
           </div>
 
           {/* Action Button */}

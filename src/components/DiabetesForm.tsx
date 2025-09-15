@@ -4,10 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Activity, User, Zap } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface HealthMetrics {
   age: string;
-  pregnancies: string;
+  gender: string;
   glucose: string;
   bloodPressure: string;
   bmi: string;
@@ -22,7 +23,7 @@ interface DiabetesFormProps {
 const DiabetesForm: React.FC<DiabetesFormProps> = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<HealthMetrics>({
     age: '',
-    pregnancies: '',
+    gender: '',
     glucose: '',
     bloodPressure: '',
     bmi: '',
@@ -35,6 +36,13 @@ const DiabetesForm: React.FC<DiabetesFormProps> = ({ onSubmit, isLoading }) => {
     setFormData(prev => ({
       ...prev,
       [field]: event.target.value
+    }));
+  };
+
+  const handleSelectChange = (field: keyof HealthMetrics) => (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
     }));
   };
 
@@ -80,23 +88,22 @@ const DiabetesForm: React.FC<DiabetesFormProps> = ({ onSubmit, isLoading }) => {
               />
             </div>
 
-            {/* Number of Pregnancies */}
+            {/* Gender */}
             <div className="space-y-2">
-              <Label htmlFor="pregnancies" className="flex items-center gap-2">
+              <Label htmlFor="gender" className="flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
-                Number of Pregnancies
+                Gender
               </Label>
-              <Input
-                id="pregnancies"
-                type="number"
-                min="0"
-                max="20"
-                placeholder="e.g., 2"
-                value={formData.pregnancies}
-                onChange={handleInputChange('pregnancies')}
-                className="medical-transition focus:medical-focus"
-                required
-              />
+              <Select value={formData.gender} onValueChange={handleSelectChange('gender')} required>
+                <SelectTrigger className="medical-transition focus:medical-focus">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Glucose Level */}
