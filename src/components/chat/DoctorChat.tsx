@@ -24,7 +24,7 @@ export const DoctorChat = ({ open, onOpenChange }: DoctorChatProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hello! I\'m Dr. AI, your virtual medical assistant. I can help answer your health and medical questions. Please note that I\'m not a replacement for professional medical consultation. How can I assist you today?',
+      text: 'Hello! I\'m Dr. Sarah Mitchell, your virtual medical assistant. I can help answer your health and medical questions. Please note that I\'m not a replacement for professional medical consultation. How can I assist you today?',
       sender: 'doctor',
       timestamp: new Date()
     }
@@ -103,7 +103,7 @@ export const DoctorChat = ({ open, onOpenChange }: DoctorChatProps) => {
               <Stethoscope className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-xl">Dr. AI Medical Assistant</DialogTitle>
+              <DialogTitle className="text-xl">Dr. Sarah Mitchell</DialogTitle>
               <DialogDescription>
                 Get answers to your medical and health questions
               </DialogDescription>
@@ -131,7 +131,7 @@ export const DoctorChat = ({ open, onOpenChange }: DoctorChatProps) => {
                       </Avatar>
                       <div className="flex-1">
                         <div className="text-sm font-medium mb-1">
-                          {message.sender === 'doctor' ? 'Dr. AI' : 'You'}
+                          {message.sender === 'doctor' ? 'Dr. Sarah Mitchell' : 'You'}
                         </div>
                         <div className="text-sm text-muted-foreground">{message.text}</div>
                       </div>
@@ -149,7 +149,7 @@ export const DoctorChat = ({ open, onOpenChange }: DoctorChatProps) => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <div className="text-sm font-medium mb-1">Dr. AI</div>
+                        <div className="text-sm font-medium mb-1">Dr. Sarah Mitchell</div>
                         <div className="flex gap-1">
                           <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
