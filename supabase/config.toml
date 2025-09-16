@@ -1,1 +1,4 @@
 project_id = "ddxeiqwrleookizoqfhk"
+
+[functions.diabetes-prediction]
+verify_jwt = false

@@ -107,12 +107,44 @@ export const predictDiabetes = (metrics: HealthMetrics): DiagnosisData => {
   };
 };
 
-// Simulate async prediction (as if calling a real ML API)
-export const getPredictionAsync = (metrics: HealthMetrics): Promise<DiagnosisData> => {
-  return new Promise((resolve) => {
-    // Simulate API delay
-    setTimeout(() => {
-      resolve(predictDiabetes(metrics));
-    }, 2000 + Math.random() * 1000); // 2-3 second delay
-  });
+// Call the Python-inspired ML waterfall model via Supabase Edge Function
+export const getPredictionAsync = async (metrics: HealthMetrics): Promise<DiagnosisData> => {
+  try {
+    const { supabase } = await import('../integrations/supabase/client');
+    
+    console.log('Calling diabetes prediction edge function with:', metrics);
+    
+    const { data, error } = await supabase.functions.invoke('diabetes-prediction', {
+      body: metrics
+    });
+    
+    if (error) {
+      console.error('Edge function error:', error);
+      // Fallback to local prediction if edge function fails
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(predictDiabetes(metrics));
+        }, 1000);
+      });
+    }
+    
+    console.log('Edge function response:', data);
+    
+    // Transform the response to match the expected interface
+    return {
+      isDiabetic: data.isDiabetic,
+      confidence: data.confidence,
+      diabetesType: data.diabetesType,
+      riskFactors: data.riskFactors
+    };
+    
+  } catch (error) {
+    console.error('Error calling prediction service:', error);
+    // Fallback to local prediction
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(predictDiabetes(metrics));
+      }, 1000);
+    });
+  }
 };
